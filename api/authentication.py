@@ -19,16 +19,18 @@ class ApiKeyAuthentication(BaseAuthentication):
                 raise AuthenticationFailed(ErrorMessages.API_KEY_REQUIRED)
 
             try:
-                key_obj = ApiKey.objects.get(key=api_key)
-            except ApiKey.DoesNotExist:
-                logger.warning(f"Invalid API key attempt: {api_key[:8]}...")
-                raise AuthenticationFailed(ErrorMessages.INVALID_API_KEY)
+                key_obj = ApiKey.authenticate(api_key)
+                if not key_obj:
+                    logger.warning(
+                        f"Invalid API key attempt: {api_key[:8]}...")
+                    raise AuthenticationFailed(ErrorMessages.INVALID_API_KEY)
+
+                return (key_obj, None)
+
             except DatabaseError as e:
                 logger.error(f"Database error in authentication: {str(e)}")
                 raise AuthenticationFailed(
                     "Authentication service unavailable")
-
-            return (key_obj, None)
 
         except AuthenticationFailed:
             raise

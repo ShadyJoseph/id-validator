@@ -1,3 +1,5 @@
 from django.contrib import admin
+from .models import ApiKey, Log
 
-# Register your models here.
+admin.site.register(ApiKey)
+admin.site.register(Log)

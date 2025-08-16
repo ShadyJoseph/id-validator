@@ -18,8 +18,8 @@ class Command(BaseCommand):
         length = options['length']
 
         # Generate secure random API key
-        alphabet = string.ascii_letters + string.digits
-        api_key = ''.join(secrets.choice(alphabet) for _ in range(length))
+        api_key = ''.join(secrets.choice(string.ascii_letters + string.digits)
+                          for _ in range(length))
 
         # Create API key object
         key_obj = ApiKey(user=user)

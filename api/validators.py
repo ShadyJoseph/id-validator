@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Dict, Any
 from .constants import (
-    NATIONAL_ID_LENGTH, VALID_CENTURY_DIGITS, GOVERNORATE_CODES,
+    NATIONAL_ID_LENGTH, GOVERNORATE_CODES,
     ErrorMessages
 )
 from .exceptions import NationalIDValidationError

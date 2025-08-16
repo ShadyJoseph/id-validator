@@ -4,7 +4,7 @@ from cryptography.fernet import Fernet
 from django.db import models
 from django.core.validators import MinLengthValidator, MaxLengthValidator
 from django.conf import settings
-from .constants import API_KEY_MAX_LENGTH, NATIONAL_ID_LENGTH
+from .constants import NATIONAL_ID_LENGTH
 
 
 class ApiKey(models.Model):

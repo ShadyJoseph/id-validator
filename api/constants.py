@@ -1,13 +1,8 @@
 # Authentication
 API_KEY_HEADER = 'X-API-KEY'
-API_KEY_MAX_LENGTH = 64
 
 # National ID Configuration
 NATIONAL_ID_LENGTH = 14
-VALID_CENTURY_DIGITS = ('2', '3')
-
-# Rate Limiting
-DEFAULT_RATE_LIMIT = '100/minute'
 
 # Egyptian Governorate Codes
 GOVERNORATE_CODES = {
@@ -50,7 +45,7 @@ class ErrorMessages:
     INACTIVE_API_KEY = 'Inactive API Key'
     INVALID_LENGTH = f'National ID must be exactly {NATIONAL_ID_LENGTH} digits'
     INVALID_FORMAT = 'National ID must contain only digits'
-    INVALID_CENTURY = f'Invalid century digit (must be {" or ".join(VALID_CENTURY_DIGITS)})'
+    INVALID_CENTURY = 'Invalid century digit (must be 2 or 3)'
     INVALID_GOVERNORATE = 'Invalid governorate code'
     INVALID_DATE_FORMAT = 'Invalid birth date format or values'
     FUTURE_DATE = 'Birth date cannot be in the future'

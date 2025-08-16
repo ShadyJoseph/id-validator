@@ -199,3 +199,16 @@ python manage.py test api.tests.test_authentication
 python manage.py test api.tests.test_admin
 python manage.py test api.tests.test_integration
 ```
+
+### Continuous Integration (CI)
+
+This project uses GitHub Actions for automated testing.
+Every time code is pushed or a pull request is opened, the pipeline runs to ensure code quality.
+
+Workflow Steps:
+
+Checkout repository – fetch the latest code.
+Set up Python – install the correct Python version.
+Install dependencies – using pip install -r requirements.txt.
+Run migrations – apply database schema changes (python manage.py migrate).
+Run tests – execute Django test suite to validate functionality.

@@ -1,6 +1,6 @@
 # Authentication
 API_KEY_HEADER = 'X-API-KEY'
-API_KEY_MAX_LENGTH = 100
+API_KEY_MAX_LENGTH = 64
 
 # National ID Configuration
 NATIONAL_ID_LENGTH = 14

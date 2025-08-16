@@ -16,15 +16,18 @@ class ValidationResult(NamedTuple):
     error: Optional[str] = None
 
 
-def create_log(national_id: str, result: ValidationResult, api_key: str) -> Optional[Log]:
+def create_log(national_id: str, result: ValidationResult, api_key_obj: ApiKey) -> Optional[Log]:
     """Create log entry for validation attempt."""
     try:
+        # Use the key preview from the API key object
+        api_key_preview = api_key_obj.get_key_preview() if api_key_obj else "unknown"
+
         return Log.objects.create(
             national_id=national_id,
             valid=result.is_valid,
             extracted_data=result.data,
             error=result.error,
-            api_key_used=api_key
+            api_key_used=api_key_preview
         )
     except (IntegrityError, DatabaseError) as e:
         logger.error(f"Failed to create log: {str(e)}")
@@ -43,8 +46,8 @@ def validate_national_id(national_id: str) -> ValidationResult:
         return ValidationResult(False, error=ErrorMessages.VALIDATION_ERROR)
 
 
-def process_validation_request(national_id: str, api_key: ApiKey) -> Tuple[ValidationResult, Optional[Log]]:
+def process_validation_request(national_id: str, api_key_obj: ApiKey) -> Tuple[ValidationResult, Optional[Log]]:
     """Process validation request including logging."""
     result = validate_national_id(national_id)
-    log_entry = create_log(national_id, result, api_key.key)
+    log_entry = create_log(national_id, result, api_key_obj)
     return result, log_entry

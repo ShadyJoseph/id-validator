@@ -3,6 +3,10 @@ from .models import ApiKey
 
 
 class HasApiKey(BasePermission):
+    """Check if request has valid API key authentication"""
+
     def has_permission(self, request, view):
-        # Check if the request has an authenticated ApiKey
-        return request.user and isinstance(request.user, ApiKey)
+        return (hasattr(request, 'user') and
+                request.user and
+                isinstance(request.user, ApiKey) and
+                request.user.is_valid())

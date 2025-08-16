@@ -55,6 +55,12 @@ class ApiKeyAdmin(admin.ModelAdmin):
     list_filter = ['is_active', 'created_at']
     search_fields = ['user']
 
+    class Media:
+        css = {
+            'all': ('api/admin_styles.css',)
+        }
+        js = ('api/admin_scripts.js',)
+
     def get_fieldsets(self, request, obj=None):
         """Dynamic fieldsets based on context"""
         if obj and self._has_generated_key(request, obj):
@@ -94,30 +100,10 @@ class ApiKeyAdmin(admin.ModelAdmin):
             '<code class="api-key-code">{}</code>'
             '<button type="button" onclick="copyKey(\'{}\', this)" class="copy-btn">Copy</button>'
             '<button type="button" onclick="hideKeyBox()" class="hide-btn">Done</button>'
-            '</div>'
-            '<style>'
-            '.key-display {{ background: #fff3cd; padding: 15px; border: 1px solid #ffc107; '
-            'border-radius: 4px; margin: 10px 0; position: relative; }}'
-            '.close-btn {{ position: absolute; top: 5px; right: 10px; background: none; '
-            'border: none; font-size: 16px; cursor: pointer; }}'
-            '.api-key-code {{ display: block; background: #f8f9fa; padding: 8px; '
-            'border: 1px solid #ddd; border-radius: 4px; margin: 10px 0; word-break: break-all; }}'
-            '.copy-btn, .hide-btn {{ padding: 6px 12px; margin-right: 8px; border: none; '
-            'border-radius: 4px; cursor: pointer; }}'
-            '.copy-btn {{ background: #007bff; color: white; }}'
-            '.hide-btn {{ background: #6c757d; color: white; }}'
-            '</style>'
-            '<script>'
-            'function copyKey(key, btn) {{'
-            '    navigator.clipboard.writeText(key).then(() => {{'
-            '        btn.textContent = "Copied!"; btn.style.background = "#28a745";'
-            '        setTimeout(() => {{ btn.textContent = "Copy"; btn.style.background = "#007bff"; }}, 2000);'
-            '    }}).catch(() => alert("Copy failed. Select and copy manually."));'
-            '}}'
-            'function hideKeyBox() {{ document.getElementById("key-box").style.display = "none"; }}'
-            '</script>',
+            '</div>',
             generated_key, generated_key
         )
+
     display_generated_key.short_description = 'Generated API Key'
 
     def changeform_view(self, request, object_id=None, form_url='', extra_context=None):

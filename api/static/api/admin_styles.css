@@ -1,0 +1,48 @@
+/* API Key Admin Styles */
+.key-display {
+    background: #fff3cd;
+    padding: 15px;
+    border: 1px solid #ffc107;
+    border-radius: 4px;
+    margin: 10px 0;
+    position: relative;
+}
+
+.close-btn {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.api-key-code {
+    display: block;
+    background: #f8f9fa;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin: 10px 0;
+    word-break: break-all;
+}
+
+.copy-btn,
+.hide-btn {
+    padding: 6px 12px;
+    margin-right: 8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.copy-btn {
+    background: #007bff;
+    color: white;
+}
+
+.hide-btn {
+    background: #6c757d;
+    color: white;
+}

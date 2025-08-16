@@ -22,26 +22,20 @@ pip install -r requirements.txt
 
 ### 2. Environment Setup
 
-Generate required keys and create a `.env` file in the root directory:
+Generate a Django SECRET_KEY and create a `.env` file in the root directory:
 
 ```bash
-# Generate Django SECRET_KEY
+# Generate Django SECRET_KEY (required for Django to function)
 python -c "import secrets, string; print(''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(50)))"
-
-
-# Generate encryption key for API keys
-python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode().rstrip('='))"
 ```
 
-Create `.env` file with the generated values:
+Create `.env` file:
 
 ```env
-SECRET_KEY=django-insecure-generated-key-from-first-command-above
+SECRET_KEY=your-generated-secret-key-here
 DEBUG=False
 ALLOWED_HOSTS=localhost,127.0.0.1,yourdomain.com
-ENCRYPTION_KEY=generated-encryption-key-from-second-command-above
 DEFAULT_RATE_LIMIT=100/minute
-LOG_LEVEL=INFO
 ```
 
 ### 3. Database Setup
@@ -49,22 +43,19 @@ LOG_LEVEL=INFO
 ```bash
 python manage.py makemigrations
 python manage.py migrate
-python manage.py createsuperuser  # Optional: for Django admin access
+python manage.py createsuperuser
 ```
 
-### 4. Create API Key
+### 4. Create API Key via Admin
 
-```bash
-python manage.py create_api_key "client_name"
-```
+1. Run the server: `python manage.py runserver`
+2. Go to Django admin: `http://localhost:8000/admin/`
+3. Log in with your superuser credentials
+4. Navigate to **Api Keys** → **Add Api key**
+5. Select a user and click **Save**
+6. **Important**: Copy the generated API key immediately - it cannot be retrieved again!
 
-Save the generated API key - it cannot be retrieved again!
-
-### 5. Run the Server
-
-```bash
-python manage.py runserver
-```
+### 5. API Ready!
 
 The API will be available at `http://localhost:8000/api/v1/`
 
@@ -76,18 +67,48 @@ The API will be available at `http://localhost:8000/api/v1/`
 POST /api/v1/national-id/
 ```
 
-### Headers
+### Example Requests
 
+#### PowerShell (Windows)
+
+```powershell
+Invoke-WebRequest -Uri "http://127.0.0.1:8000/api/v1/national-id/" `
+    -Method POST `
+    -Headers @{ "X-API-KEY" = "5qxlToTFWUrOvvQAUdbsUoh9Ss6VkfhM" } `
+    -ContentType "application/json" `
+    -Body '{"national_id": "30307020102112"}'
 ```
-X-API-KEY: your-api-key-here
-Content-Type: application/json
+
+#### Bash/Terminal (Linux/Mac)
+
+```bash
+curl -X POST http://127.0.0.1:8000/api/v1/national-id/ \
+    -H "X-API-KEY: 5qxlToTFWUrOvvQAUdbsUoh9Ss6VkfhM" \
+    -H "Content-Type: application/json" \
+    -d '{"national_id": "30307020102112"}'
+```
+
+#### Python Example
+
+```python
+import requests
+
+url = "http://127.0.0.1:8000/api/v1/national-id/"
+headers = {
+    "X-API-KEY": "5qxlToTFWUrOvvQAUdbsUoh9Ss6VkfhM",
+    "Content-Type": "application/json"
+}
+data = {"national_id": "30307020102112"}
+
+response = requests.post(url, headers=headers, json=data)
+print(response.json())
 ```
 
 ### Request Body
 
 ```json
 {
-  "national_id": "29001011234567"
+  "national_id": "30307020102112"
 }
 ```
 
@@ -96,19 +117,11 @@ Content-Type: application/json
 ```json
 {
   "valid": true,
-  "birth_year": 1990,
-  "birth_date": "01/01/1990",
+  "message": "Validation successful",
+  "birth_year": 2003,
+  "birth_date": "02/07/2003",
   "gender": "Male",
   "governorate": "Cairo"
-}
-```
-
-### Response (Invalid ID)
-
-```json
-{
-  "valid": false,
-  "error": "Invalid governorate code"
 }
 ```
 
@@ -128,6 +141,24 @@ Egyptian national IDs follow this 14-digit format: `CYYMMDDGGXXXS`
 
 The API recognizes all 27 Egyptian governorates plus foreign-born individuals (code 88).
 
+## Managing API Keys
+
+### Django Admin Interface
+
+Access the admin at `/admin/` to:
+
+- **Create API Keys**: Generate new keys for clients
+- **View API Keys**: See all keys with masked previews
+- **Activate/Deactivate**: Control key access
+- **Monitor Logs**: View all validation requests and results
+
+### Key Features
+
+- **Auto-generation**: Keys are automatically generated securely
+- **One-time Display**: Generated keys are shown only once for security
+- **Encrypted Storage**: Keys are encrypted before database storage
+- **Usage Tracking**: Monitor which keys are being used
+
 ## Architecture Decisions
 
 ### Security
@@ -141,17 +172,6 @@ The API recognizes all 27 Egyptian governorates plus foreign-born individuals (c
 - **Database Indexing**: Strategic indexes on frequently queried fields
 - **Rate Limiting**: Prevents API abuse while allowing legitimate usage
 - **Minimal Dependencies**: Only essential packages to reduce attack surface
-
-## Error Handling
-
-The API provides detailed error messages for various validation failures:
-
-- Invalid length (not 14 digits)
-- Non-numeric characters
-- Invalid century digit
-- Invalid governorate code
-- Invalid birth date
-- Future birth dates
 
 ## Rate Limiting
 
@@ -170,14 +190,6 @@ All validation requests are logged with:
 - Error message (if failed)
 - API key used (preview only for privacy)
 
-## Admin Interface
-
-Access Django admin at `/admin/` to:
-
-- View and manage API keys
-- Monitor validation logs
-- Analyze usage patterns
-
 ## Development
 
 ### Running Tests
@@ -185,16 +197,3 @@ Access Django admin at `/admin/` to:
 ```bash
 python manage.py test
 ```
-
-### Code Style
-
-The project follows Django best practices and PEP 8 standards.
-
-## Production Deployment
-
-1. Set `DEBUG=False` in environment variables
-2. Configure `ALLOWED_HOSTS` for your domain
-3. Use a production database (PostgreSQL recommended)
-4. Set up proper logging (file-based)
-5. Configure HTTPS
-6. Set secure Django settings (CSRF, CORS, etc.)

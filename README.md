@@ -88,22 +88,6 @@ curl -X POST http://127.0.0.1:8000/api/v1/national-id/ \
     -d '{"national_id": "30307020102112"}'
 ```
 
-#### Python Example
-
-```python
-import requests
-
-url = "http://127.0.0.1:8000/api/v1/national-id/"
-headers = {
-    "X-API-KEY": "5qxlToTFWUrOvvQAUdbsUoh9Ss6VkfhM",
-    "Content-Type": "application/json"
-}
-data = {"national_id": "30307020102112"}
-
-response = requests.post(url, headers=headers, json=data)
-print(response.json())
-```
-
 ### Request Body
 
 ```json

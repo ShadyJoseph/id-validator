@@ -162,6 +162,9 @@ Access the admin at `/admin/` to:
 - **Default**: 100 requests per minute per API key
 - **Configurable**: Adjust via `DEFAULT_RATE_LIMIT` environment variable
 - **Per-Key**: Each API key has independent rate limiting
+  Our API uses API key–based rate limiting to prevent abuse and ensure fair usage.
+
+as Each request must include a valid API key in the header
 
 ## Logging
 
@@ -178,6 +181,21 @@ All validation requests are logged with:
 
 ### Running Tests
 
+### Running all tests
+
 ```bash
 python manage.py test
+```
+
+### Run tests in a specific module (test file)
+
+```bash
+python manage.py test api.tests.test_models
+python manage.py test api.tests.test_views
+python manage.py test api.tests.test_services
+python manage.py test api.tests.test_validators
+python manage.py test api.tests.test_serializers
+python manage.py test api.tests.test_authentication
+python manage.py test api.tests.test_admin
+python manage.py test api.tests.test_integration
 ```
